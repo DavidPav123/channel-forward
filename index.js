@@ -1,6 +1,6 @@
 // Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits } = require('discord.js');
-const { TOKEN } = require('./config.json');
+import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { TOKEN } from './config.js';
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
