@@ -1,5 +1,8 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import { TOKEN, READING_CHANNELS, WRITING_CHANNELS, EMBED_TITLE, EMBED_FOOTER } from './config.js';
+import { readFileSync } from 'fs';
+
+const config = JSON.parse(readFileSync('./config.json', 'utf-8'));
+const { TOKEN, READING_CHANNELS, WRITING_CHANNELS, EMBED_TITLE, EMBED_FOOTER } = config;
 
 const client = new Client({
     intents: [
@@ -18,7 +21,7 @@ client.on(Events.MessageCreate, (message) => {
     console.log(`${message.author.tag} said: ${message}`);
 
     if (READING_CHANNELS.includes(message.channel.id)) {
-        const messages: EmbedBuilder[] = [];
+        const messages = [];
         if (message.content === '!embed') {
             // 1. Build the embed
             const exampleEmbed = new EmbedBuilder()
@@ -39,10 +42,10 @@ client.on(Events.MessageCreate, (message) => {
             message.embeds.forEach((embed) => {
                 const newembed = new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle(EMBED_TITLE || "Default Title")
+                    .setTitle(EMBED_TITLE || 'Default Title')
                     .setDescription(embed.description)
                     .setFields(embed.fields)
-                    .setFooter({ text: EMBED_FOOTER || "Default Footer" });
+                    .setFooter({ text: EMBED_FOOTER || 'Default Footer' });
                 messages.push(newembed);
             });
             WRITING_CHANNELS.forEach(channel => {
@@ -52,9 +55,9 @@ client.on(Events.MessageCreate, (message) => {
                     if (
                         discord_channel &&
                         'send' in discord_channel &&
-                        typeof (discord_channel as any).send === 'function'
+                        typeof (discord_channel).send === 'function'
                     ) {
-                        (discord_channel as any).send({ embeds: messages });
+                        (discord_channel).send({ embeds: messages });
                     }
                 });
             });
