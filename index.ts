@@ -1,5 +1,5 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import { TOKEN, READING_CHANNELS, WRITING_CHANNELS } from './config.js';
+import { TOKEN, READING_CHANNELS, WRITING_CHANNELS, EMBED_TITLE, EMBED_FOOTER } from './config.js';
 
 const client = new Client({
     intents: [
@@ -23,13 +23,13 @@ client.on(Events.MessageCreate, (message) => {
             // 1. Build the embed
             const exampleEmbed = new EmbedBuilder()
                 .setColor(0x0099FF)
-                .setTitle('SOY POKEMON FEED')
-                .setDescription('Someone bought a pokemon card.')
+                .setTitle('TEST EMBED TITLE')
+                .setDescription('TEST DESCRIPTION')
                 .addFields(
-                    { name: 'STORE', value: 'TARGET', inline: true },
-                    { name: 'Quantity', value: '1', inline: true },
+                    { name: 'FIELD 1 NAME', value: 'FIELD 1 VALUE', inline: true },
+                    { name: 'FIELD 2 NAME', value: 'FIELD 2 VALUE', inline: true },
                 )
-                .setFooter({ text: 'OTHER GUYS SOY BOT' });
+                .setFooter({ text: 'TEST EMBED FOOTER' });
 
             // 2. Send it (note: embeds is an array [])
             message.channel.send({ embeds: [exampleEmbed] });
@@ -39,10 +39,10 @@ client.on(Events.MessageCreate, (message) => {
             message.embeds.forEach((embed) => {
                 const newembed = new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle('Dylan\'s Cool Pokemon Feed')
+                    .setTitle(EMBED_TITLE || "Default Title")
                     .setDescription(embed.description)
                     .setFields(embed.fields)
-                    .setFooter({ text: 'Dylan Checkout Notifications' });
+                    .setFooter({ text: EMBED_FOOTER || "Default Footer" });
                 messages.push(newembed);
             });
             WRITING_CHANNELS.forEach(channel => {
