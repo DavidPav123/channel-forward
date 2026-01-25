@@ -20,7 +20,7 @@ EMBED_FOOTER=Embed Footer
 ```
 Replacing <Your_Bots_Token> with your new bots token, <Channel_ID> with the IDs of the channels you wish to read from and write to, and the title and footer with your desired title and footer of the forwarded messages.
 
-5. Open a new terminal and run the following to install the dependencies required for this program:
+5. Open a new terminal and navigate to the folder you just unzipped. Once inside the folder, run the following to install the dependencies required for this program:
 ```bash
 bun install
 ```
