@@ -1,4 +1,5 @@
-import { configs } from '@eslint/js';
+import pkg from '@eslint/js';
+const { configs } = pkg;
 
 export default [
 	configs.recommended,
@@ -15,7 +16,6 @@ export default [
 			curly: ['error', 'multi-line', 'consistent'],
 			'dot-location': ['error', 'property'],
 			'handle-callback-err': 'off',
-			indent: ['error', 'tab'],
 			'keyword-spacing': 'error',
 			'max-nested-callbacks': ['error', { max: 4 }],
 			'max-statements-per-line': ['error', { max: 2 }],

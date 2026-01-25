@@ -1,0 +1,71 @@
+import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
+import { TOKEN, READING_CHANNELS, WRITING_CHANNELS } from './config.js';
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+    ],
+});
+
+client.on(Events.Error, err => {
+    console.error(err);
+    process.exit(1);
+});
+
+client.on(Events.MessageCreate, (message) => {
+    console.log(`${message.author.tag} said: ${message}`);
+
+    if (READING_CHANNELS.includes(message.channel.id)) {
+        const messages: EmbedBuilder[] = [];
+        if (message.content === '!embed') {
+            // 1. Build the embed
+            const exampleEmbed = new EmbedBuilder()
+                .setColor(0x0099FF)
+                .setTitle('SOY POKEMON FEED')
+                .setDescription('Someone bought a pokemon card.')
+                .addFields(
+                    { name: 'STORE', value: 'TARGET', inline: true },
+                    { name: 'Quantity', value: '1', inline: true },
+                )
+                .setFooter({ text: 'OTHER GUYS SOY BOT' });
+
+            // 2. Send it (note: embeds is an array [])
+            message.channel.send({ embeds: [exampleEmbed] });
+        }
+
+        if (message.embeds.length > 0) {
+            message.embeds.forEach((embed) => {
+                const newembed = new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Dylan\'s Cool Pokemon Feed')
+                    .setDescription(embed.description)
+                    .setFields(embed.fields)
+                    .setFooter({ text: 'Dylan Checkout Notifications' });
+                messages.push(newembed);
+            });
+            WRITING_CHANNELS.forEach(channel => {
+                const channel_promise = client.channels.fetch(channel);
+                channel_promise.then((discord_channel) => {
+                    // Check if the channel is a TextChannel or has send method
+                    if (
+                        discord_channel &&
+                        'send' in discord_channel &&
+                        typeof (discord_channel as any).send === 'function'
+                    ) {
+                        (discord_channel as any).send({ embeds: messages });
+                    }
+                });
+            });
+        }
+
+    }
+});
+
+client.once(Events.ClientReady, (readyClient) => {
+    console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+
+client.login(TOKEN);
