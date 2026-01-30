@@ -19,36 +19,38 @@ client.on(Events.Error, err => {
 
 client.on(Events.MessageCreate, (message) => {
     console.log(`${message.author.tag} said: ${message}`);
-
     if (READING_CHANNELS.includes(message.channel.id)) {
         const messages = [];
         if (message.content === '!embed') {
-            // 1. Build the embed
             const exampleEmbed = new EmbedBuilder()
                 .setColor(0x0099FF)
                 .setTitle('TEST EMBED TITLE')
                 .setDescription('TEST DESCRIPTION')
                 .addFields(
                     { name: 'FIELD 1 NAME', value: 'FIELD 1 VALUE', inline: true },
+                    { name: 'Proxy', value: 'Proxy Value', inline: true },
+                    { name: 'Order ID', value: 'Order value', inline: true },
+                    { name: 'Profile', value: 'profile value', inline: true },
                     { name: 'FIELD 2 NAME', value: 'FIELD 2 VALUE', inline: true },
                 )
                 .setFooter({ text: 'TEST EMBED FOOTER' });
-
-            // 2. Send it (note: embeds is an array [])
             message.channel.send({ embeds: [exampleEmbed] });
         }
 
         if (message.embeds.length > 0) {
             message.embeds.forEach((embed) => {
-                const newembed = new EmbedBuilder()
+                const new_fields = embed.fields.filter((field) =>
+                    !['proxy', 'profile', 'order id'].includes(field.name.toLowerCase()),
+                );
+                const new_embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle(EMBED_TITLE || 'Default Title')
                     .setDescription(embed.description)
-                    .setFields(embed.fields)
+                    .setFields(new_fields)
                     .setFooter({ text: EMBED_FOOTER || 'Default Footer' });
-                messages.push(newembed);
+                messages.push(new_embed);
             });
-            WRITING_CHANNELS.forEach(channel => {
+            WRITING_CHANNELS.forEach((channel) => {
                 const channel_promise = client.channels.fetch(channel);
                 channel_promise.then((discord_channel) => {
                     // Check if the channel is a TextChannel or has send method
@@ -62,7 +64,6 @@ client.on(Events.MessageCreate, (message) => {
                 });
             });
         }
-
     }
 });
 
