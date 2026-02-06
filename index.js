@@ -40,7 +40,7 @@ client.on(Events.MessageCreate, (message) => {
         if (message.embeds.length > 0) {
             message.embeds.forEach((embed) => {
                 const new_fields = embed.fields.filter((field) =>
-                    !['proxy', 'profile', 'order id'].includes(field.name.toLowerCase()),
+                    ['site', 'quantity', 'store'].includes(field.name.toLowerCase()),
                 );
                 const new_embed = new EmbedBuilder()
                     .setColor(0x0099FF)
