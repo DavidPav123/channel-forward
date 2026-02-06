@@ -28,9 +28,9 @@ client.on(Events.MessageCreate, (message) => {
                 .setDescription('TEST DESCRIPTION')
                 .addFields(
                     { name: 'FIELD 1 NAME', value: 'FIELD 1 VALUE', inline: true },
-                    { name: 'Proxy', value: 'Proxy Value', inline: true },
-                    { name: 'Order ID', value: 'Order value', inline: true },
-                    { name: 'Profile', value: 'profile value', inline: true },
+                    { name: 'site', value: 'Proxy Value', inline: true },
+                    { name: 'quantity', value: 'Order value', inline: true },
+                    { name: 'store', value: 'profile value', inline: true },
                     { name: 'FIELD 2 NAME', value: 'FIELD 2 VALUE', inline: true },
                 )
                 .setFooter({ text: 'TEST EMBED FOOTER' });
