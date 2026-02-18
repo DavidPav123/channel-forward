@@ -1,5 +1,6 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import { readFileSync } from 'fs';
+import { decode } from 'html-entities';
 
 const config = JSON.parse(readFileSync('./config.json', 'utf-8'));
 const { TOKEN, READING_CHANNELS, WRITING_CHANNELS, EMBED_TITLE, EMBED_FOOTER } = config;
@@ -17,6 +18,11 @@ client.on(Events.Error, err => {
     process.exit(1);
 });
 
+function capitalizeFirstLetter(string) {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 client.on(Events.MessageCreate, (message) => {
     console.log(`${message.author.tag} said: ${message}`);
     if (READING_CHANNELS.includes(message.channel.id)) {
@@ -25,7 +31,7 @@ client.on(Events.MessageCreate, (message) => {
             const exampleEmbed = new EmbedBuilder()
                 .setColor(0x0099FF)
                 .setTitle('TEST EMBED TITLE')
-                .setDescription('TEST DESCRIPTION')
+                .setDescription('Pok&#233;mon Trading Card Game: Scarlet &#38; Violet&#8212;Prismatic Evolutions Tech Sticker Collection Glaceon')
                 .addFields(
                     { name: 'FIELD 1 NAME', value: 'FIELD 1 VALUE', inline: true },
                     { name: 'site', value: 'Proxy Value', inline: true },
@@ -39,13 +45,19 @@ client.on(Events.MessageCreate, (message) => {
 
         if (message.embeds.length > 0) {
             message.embeds.forEach((embed) => {
-                const new_fields = embed.fields.filter((field) =>
-                    ['site', 'quantity', 'store'].includes(field.name.toLowerCase()),
-                );
+                const new_fields = embed.fields
+                    .filter((field) =>
+                        ['site', 'quantity', 'store'].includes(field.name.trim().toLowerCase()),
+                    )
+                    .map((field) => ({
+                        name: capitalizeFirstLetter(field.name.trim().toLowerCase()),
+                        value: field.value,
+                        inline: field.inline,
+                    }));
                 const new_embed = new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle(EMBED_TITLE || 'Default Title')
-                    .setDescription(embed.description)
+                    .setDescription(decode(embed.description))
                     .setFields(new_fields)
                     .setFooter({ text: EMBED_FOOTER || 'Default Footer' });
                 messages.push(new_embed);
